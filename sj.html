@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>浪漫卡片动画</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: particle-float 15s infinite linear;
+        }
+        
+        .card {
+            position: absolute;
+            width: 280px;
+            height: 180px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform-style: preserve-3d;
+            transition: transform 0.5s, opacity 1.5s, left 1.2s, top 1.2s, box-shadow 0.5s;
+            padding: 15px;
+            cursor: pointer;
+            opacity: 0;
+            z-index: 1;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(45deg);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        .card:hover {
+            z-index: 10;
+            transform: scale(1.05) translateZ(20px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 0 30px rgba(255, 105, 180, 0.5);
+        }
+        
+        .card:hover::before {
+            opacity: 1;
+        }
+        
+        .card-content {
+            transform: translateZ(10px);
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            color: #ff4d6d;
+            opacity: 0;
+            z-index: 0;
+            pointer-events: none;
+            animation: float 4s ease-in-out infinite;
+            text-shadow: 0 2px 10px rgba(255, 77, 109, 0.3);
+            filter: drop-shadow(0 0 5px rgba(255, 77, 109, 0.5));
+        }
+        
+        .heart.small {
+            font-size: 16px;
+            animation-duration: 3s;
+            opacity: 0.6;
+        }
+        
+        .heart.medium {
+            font-size: 24px;
+            animation-duration: 4s;
+            opacity: 0.8;
+        }
+        
+        .heart.large {
+            font-size: 32px;
+            animation-duration: 5s;
+            opacity: 1;
+        }
+        
+        .heart-sparkle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            animation: sparkle 2s infinite;
+            filter: blur(1px);
+        }
+        
+        .light-beam {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
+            opacity: 0;
+            z-index: -1;
+            animation: beam-pulse 4s infinite;
+        }
+        
+        @keyframes particle-float {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(20px) rotate(180deg);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0) scale(1) rotate(0deg);
+                opacity: 0.7;
+            }
+            25% {
+                transform: translateY(-15px) translateX(5px) scale(1.1) rotate(5deg);
+                opacity: 0.9;
+            }
+            50% {
+                transform: translateY(-5px) translateX(-3px) scale(0.95) rotate(-3deg);
+                opacity: 0.8;
+            }
+            75% {
+                transform: translateY(-20px) translateX(2px) scale(1.05) rotate(2deg);
+                opacity: 0.85;
+            }
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+        
+        @keyframes sparkle {
+            0%, 100% {
+                opacity: 0;
+                transform: scale(0) rotate(0deg);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1) rotate(180deg);
+            }
+        }
+        
+        @keyframes beam-pulse {
+            0%, 100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.7;
+                transform: scale(1.1);
+            }
+        }
+        
+        @keyframes heart-pulse {
+            0%, 100% {
+                transform: scale(1);
+                filter: brightness(1);
+            }
+            50% {
+                transform: scale(1.05);
+                filter: brightness(1.3);
+            }
+        }
+        
+        .heart-formation {
+            animation: heart-pulse 3s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="cardContainer"></div>
+    <div class="particles" id="particles"></div>
+    
+    <script>
+        // 情侣关心话语（80个）
+        const messages = [
+            "今天过得开心吗？", "记得按时吃饭哦", "累了就休息一下", "我会一直陪着你",
+            "你是我最重要的人", "想你了，宝贝", "照顾好自己", "有我在，别担心",
+            "今天天气不错", "你笑起来真好看", "我会永远支持你", "你是我的全世界",
+            "今天也要加油哦", "我会一直守护你", "爱你，永远不变", "你是我生命的光",
+            "和你在一起真好", "你让我的世界完整", "每天多爱你一点", "你是我最美的遇见",
+            "想和你一起变老", "你是我心中的唯一", "有你的日子最甜蜜", "你是我永远的宝贝",
+            "爱你胜过爱自己", "你是我最美的风景", "想和你共度余生", "你是我最大的幸福",
+            "爱你到天荒地老", "你是我心中的太阳", "你是我今生的唯一", "有你在身边真好",
+            "你是我甜蜜的负担", "想和你一起看星星", "你是我温暖的港湾", "爱你不需要理由",
+            "你是我最美的梦", "想和你牵手到老", "你是我生命的意义", "有你的每一天都甜",
+            "你是我心跳的理由", "想和你分享一切", "你是我灵魂的伴侣", "爱你如初永不变",
+            "你是我所有的期待", "想和你创造回忆", "你是我心中的诗歌", "有你的世界更美好",
+            "你是我永恒的誓言", "想和你慢慢变老", "你的微笑是我的阳光", "每一天都因你而美好",
+            "你是我心中的小确幸", "想把你捧在手心里", "你是我最珍贵的礼物", "有你的陪伴最温暖",
+            "你是我前进的动力", "想和你一起看日出日落", "你是我心中的彩虹", "爱你是我最美的决定",
+            "你是我生命的奇迹", "想和你一起走过春夏秋冬", "你是我心中的旋律", "有你的地方就是家",
+            "你是我永远的依靠", "想和你分享所有美好", "你是我心中的星辰", "爱你让我变得更好",
+            "你是我最美的意外", "想和你一起数星星", "你是我心中的港湾", "有你的爱我很幸福",
+            "你是我生命的色彩", "想和你一起慢慢变老", "你是我心中的宝藏", "爱你是我最幸福的事",
+            "你是我最美的风景线", "想和你一起看遍世界", "你是我心中的天使", "有你的每一天都是节日"
+        ];
+        
+        // 卡片颜色方案
+        const colors = [
+            "linear-gradient(135deg, #ff9a9e, #fad0c4)",
+            "linear-gradient(135deg, #a1c4fd, #c2e9fb)",
+            "linear-gradient(135deg, #ffecd2, #fcb69f)",
+            "linear-gradient(135deg, #84fab0, #8fd3f4)",
+            "linear-gradient(135deg, #d4fc79, #96e6a1)",
+            "linear-gradient(135deg, #a6c0fe, #f68084)",
+            "linear-gradient(135deg, #fccb90, #d57eeb)",
+            "linear-gradient(135deg, #e0c3fc, #8ec5fc)",
+            "linear-gradient(135deg, #f6d365, #fda085)",
+            "linear-gradient(135deg, #ff9a9e, #fecfef)"
+        ];
+        
+        const cardContainer = document.getElementById('cardContainer');
+        const particlesContainer = document.getElementById('particles');
+        
+        let cards = [];
+        let animationInProgress = false;
+        
+        // 创建背景粒子
+        function createParticles() {
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // 随机位置
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // 随机大小
+                const size = 2 + Math.random() * 4;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // 随机颜色
+                const colors = ['#ff9a9e', '#a1c4fd', '#ffecd2', '#84fab0', '#d4fc79'];
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                // 随机动画延迟和持续时间
+                particle.style.animationDelay = `${Math.random() * 15}s`;
+                particle.style.animationDuration = `${10 + Math.random() * 10}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // 创建卡片
+        function createCards() {
+            if (animationInProgress) return;
+            
+            cardContainer.innerHTML = '';
+            cards = [];
+            
+            messages.forEach((message, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                const cardContent = document.createElement('div');
+                cardContent.className = 'card-content';
+                cardContent.innerHTML = message;
+                
+                // 添加光束效果
+                const lightBeam = document.createElement('div');
+                lightBeam.className = 'light-beam';
+                card.appendChild(lightBeam);
+                
+                card.appendChild(cardContent);
+                
+                const colorIndex = Math.floor(Math.random() * colors.length);
+                card.style.background = colors[colorIndex];
+                
+                // 随机位置 - 在屏幕内任意位置
+                const initialX = Math.random() * (window.innerWidth - 280);
+                const initialY = Math.random() * (window.innerHeight - 180);
+                
+                card.style.left = `${initialX}px`;
+                card.style.top = `${initialY}px`;
+                
+                cardContainer.appendChild(card);
+                cards.push(card);
+                
+                // 卡片渐显效果
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    
+                    const rotateX = (Math.random() - 0.5) * 15;
+                    const rotateY = (Math.random() - 0.5) * 15;
+                    card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                    
+                    card.addEventListener('click', () => {
+                        card.style.transform = `rotateX(${rotateX + 5}deg) rotateY(${rotateY + 5}deg) scale(1.05)`;
+                        
+                        // 点击时创建心形和闪光效果
+                        createSparkles(card.getBoundingClientRect().x + 140, card.getBoundingClientRect().y + 90);
+                        
+                        setTimeout(() => {
+                            card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1)`;
+                        }, 200);
+                    });
+                }, index * 100);
+            });
+            
+            // 所有卡片显示完毕后自动组成爱心
+            setTimeout(() => {
+                formHeart();
+            }, messages.length * 100 + 800);
+        }
+        
+        // 创建闪光效果
+        function createSparkles(x, y) {
+            for (let i = 0; i < 8; i++) {
+                setTimeout(() => {
+                    const sparkle = document.createElement('div');
+                    sparkle.className = 'heart-sparkle';
+                    
+                    sparkle.style.left = `${x}px`;
+                    sparkle.style.top = `${y}px`;
+                    
+                    // 随机动画延迟
+                    sparkle.style.animationDelay = `${Math.random() * 0.5}s`;
+                    
+                    cardContainer.appendChild(sparkle);
+                    
+                    // 2秒后移除
+                    setTimeout(() => {
+                        sparkle.remove();
+                    }, 2000);
+                }, i * 50);
+            }
+        }
+        
+        // 组成爱心形状 - 使用更美观的爱心算法
+        function formHeart() {
+            if (animationInProgress || cards.length === 0) return;
+            
+            animationInProgress = true;
+            
+            // 计算爱心形状的坐标
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            const heartRadius = Math.min(window.innerWidth, window.innerHeight) * 0.3;
+            
+            // 更美观的爱心形状算法
+            function getBeautifulHeartPoints(count) {
+                const points = [];
+                
+                // 使用更精确的爱心公式
+                for (let i = 0; i < count; i++) {
+                    const t = (i / count) * Math.PI * 2;
+                    
+                    // 更平滑的爱心公式
+                    const x = 16 * Math.pow(Math.sin(t), 3);
+                    const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+                    
+                    // 添加一些随机性使爱心看起来更自然
+                    const randomOffsetX = (Math.random() - 0.5) * 0.5;
+                    const randomOffsetY = (Math.random() - 0.5) * 0.5;
+                    
+                    points.push({
+                        x: -x + randomOffsetX, 
+                        y: -y + randomOffsetY
+                    });
+                }
+                
+                return points;
+            }
+            
+            const heartPoints = getBeautifulHeartPoints(cards.length);
+            
+            // 将卡片移动到爱心形状的位置
+            cards.forEach((card, index) => {
+                const point = heartPoints[index];
+                const scale = 0.7 + Math.random() * 0.3;
+                
+                setTimeout(() => {
+                    card.style.left = `${centerX + point.x * heartRadius / 16}px`;
+                    card.style.top = `${centerY + point.y * heartRadius / 16}px`;
+                    card.style.transform = `rotate(0deg) scale(${scale})`;
+                    card.style.zIndex = '2';
+                    
+                    // 最后一个卡片移动完成后
+                    if (index === cards.length - 1) {
+                        setTimeout(() => {
+                            // 添加爱心脉动效果
+                            cards.forEach(card => {
+                                card.classList.add('heart-formation');
+                            });
+                            
+                            // 创建漂浮的心形
+                            createFloatingHearts();
+                            
+                            animationInProgress = false;
+                            
+                            // 5秒后重新开始
+                            setTimeout(() => {
+                                cards.forEach(card => {
+                                    card.classList.remove('heart-formation');
+                                });
+                                createCards();
+                            }, 5000);
+                        }, 1000);
+                    }
+                }, index * 20);
+            });
+        }
+        
+        // 创建漂浮的心形
+        function createFloatingHearts() {
+            for (let i = 0; i < 80; i++) { // 增加心形数量
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+                    heart.innerHTML = '❤';
+                    
+                    // 随机大小
+                    const sizes = ['small', 'medium', 'large'];
+                    heart.classList.add(sizes[Math.floor(Math.random() * sizes.length)]);
+                    
+                    // 随机位置
+                    heart.style.left = `${Math.random() * 100}%`;
+                    heart.style.top = `${Math.random() * 100}%`;
+                    
+                    // 随机延迟
+                    heart.style.animationDelay = `${Math.random() * 2}s`;
+                    
+                    cardContainer.appendChild(heart);
+                    
+                    // 10秒后移除心形
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 10000);
+                }, i * 60); // 减少创建间隔，使心形更快出现
+            }
+        }
+        
+        // 初始化
+        window.addEventListener('load', () => {
+            createParticles();
+            createCards();
+        });
+        
+        // 窗口大小变化时重新调整卡片位置
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                createCards();
+            }, 250);
+        });
+    </script>
+</body>
+</html>
